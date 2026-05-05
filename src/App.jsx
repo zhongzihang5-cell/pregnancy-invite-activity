@@ -18,7 +18,7 @@ const MOCK_RECORDS = [
   { name: "王伟", relation: "爸爸", phone: "138****8801", status: "未登录", avatar: "爸" },
 ];
 
-const PRIZE_IMG = "/activity/prize-frame-sample.png";
+const PRIZE_IMG = `${import.meta.env.BASE_URL}activity/prize-frame-sample.png`;
 
 const NINE_SLOTS = [
   { id: "t1", label: "验孕留念" },
