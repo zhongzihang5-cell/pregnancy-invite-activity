@@ -1,16 +1,31 @@
-# React + Vite
+# 孕期邀请活动 · 给宝宝的第一封信
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+美柚风格活动页的 React 实现（本地开发与预览）。
 
-Currently, two official plugins are available:
+## 开发
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+浏览器打开终端里提示的本地地址即可预览。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 构建
 
-## Expanding the ESLint configuration
+```bash
+npm run build
+npm run preview   # 本地预览生产构建
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 发布到 GitHub
+
+1. 在 GitHub 新建空仓库（不要勾选初始化 README）。
+2. 在本项目目录执行：
+
+```bash
+git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+git push -u origin main
+```
+
+若要启用 GitHub Pages，可在仓库 Settings → Pages 中选择 GitHub Actions 或 `deploy` 分支；也可用 [Vite 静态部署指南](https://vite.dev/guide/static-deploy.html) 对接任意静态托管。
