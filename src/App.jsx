@@ -44,8 +44,8 @@ const PRIZE_OPTIONS = [
   { id: "vip", label: "美柚7天会员", emoji: "✨" },
 ];
 
-/** 活动页顶栏 Banner（邀请前后保持一致） */
-const ACTIVITY_HERO_IMG = `${import.meta.env.BASE_URL}activity/post-invite-hero.png`;
+/** 活动页顶栏：星空宝宝插画（邀请前后同一套） */
+const ACTIVITY_HERO_IMG = `${import.meta.env.BASE_URL}activity/hero-baby-star.png`;
 
 /** 完成礼品定制的截止日期展示文案 */
 const GIFT_CUSTOM_DEADLINE_LABEL = "2025年11月17日";
@@ -65,9 +65,9 @@ const NINE_SLOTS = [
 /** 留言字数上限（不在界面展示计数） */
 const WISH_LIMIT = 120;
 
-/** 活动页通用顶栏：礼遇插画 + 标题 + 右上角入口（邀请成功后不换图） */
+/** 活动页通用顶栏：星空宝宝 +「合体时光，好礼相伴」（邀请成功后不换图） */
 function ActivityHero({ onBack, onRules, onPrizes }) {
-  const pillDark = (label, onClick) => (
+  const pillOnHero = (label, onClick) => (
     <button
       type="button"
       onClick={onClick}
@@ -77,8 +77,8 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
         padding: "6px 12px",
         fontSize: 12,
         fontWeight: 500,
-        background: "rgba(55,48,42,0.38)",
-        color: "rgba(255,255,255,0.95)",
+        background: "rgba(255,255,255,0.42)",
+        color: "rgba(0,0,0,0.72)",
         cursor: "pointer",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
@@ -94,12 +94,12 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
         position: "relative",
         borderRadius: "0 0 16px 16px",
         overflow: "hidden",
-        minHeight: 232,
+        minHeight: 224,
       }}
     >
       <img
         src={ACTIVITY_HERO_IMG}
-        alt="免费领宝宝成长限定礼"
+        alt="合体时光，好礼相伴"
         decoding="async"
         loading="eager"
         style={{
@@ -109,7 +109,7 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: "center top",
+          objectPosition: "center 34%",
         }}
       />
       <div
@@ -117,7 +117,7 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(180deg, rgba(88,72,58,0.25) 0%, rgba(88,72,58,0.08) 45%, rgba(245,240,232,0.92) 100%)",
+          background: "linear-gradient(180deg, rgba(35,24,48,0.42) 0%, rgba(35,24,48,0.12) 40%, rgba(22,14,28,0.62) 100%)",
         }}
       />
 
@@ -131,7 +131,7 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
             height: 36,
             borderRadius: 8,
             border: "none",
-            background: "rgba(255,255,255,0.45)",
+            background: "rgba(255,255,255,0.38)",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -146,12 +146,12 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
           ‹
         </button>
         <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-          {pillDark("活动规则", onRules)}
-          {pillDark("我的奖品", onPrizes)}
+          {pillOnHero("活动规则", onRules)}
+          {pillOnHero("我的奖品", onPrizes)}
         </div>
       </div>
 
-      <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "28px 20px 26px", marginTop: 6 }}>
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "18px 20px 22px", marginTop: 8 }}>
         <div
           style={{
             fontSize: 21,
@@ -159,26 +159,13 @@ function ActivityHero({ onBack, onRules, onPrizes }) {
             color: "#fff",
             lineHeight: 1.35,
             letterSpacing: 1,
-            textShadow:
-              "0 1px 0 rgba(255,120,160,0.95), 0 -1px 0 rgba(255,120,160,0.55), 0 4px 16px rgba(120,40,70,0.35)",
+            textShadow: "0 2px 14px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.35)",
           }}
         >
-          免费领宝宝成长限定礼
+          合体时光，好礼相伴
         </div>
-        <div
-          style={{
-            marginTop: 14,
-            display: "inline-block",
-            fontSize: 12,
-            fontWeight: 500,
-            padding: "5px 14px",
-            borderRadius: 80,
-            background: "rgba(255,77,136,0.92)",
-            color: "#fff",
-            border: "1px solid rgba(255,255,255,0.35)",
-          }}
-        >
-          打造专属回忆
+        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.9)", marginTop: 10, lineHeight: 1.47, textShadow: "0 1px 8px rgba(0,0,0,0.35)" }}>
+          邀请准爸爸完成助力 · 好礼四选一
         </div>
       </div>
     </div>
