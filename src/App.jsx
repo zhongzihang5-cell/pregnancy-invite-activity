@@ -46,6 +46,12 @@ const PRIZE_OPTIONS = [
 
 const HERO_INVITE_IMG = `${import.meta.env.BASE_URL}activity/hero-baby-star.png`;
 
+/** 邀请成功后 Banner（礼遇插画） */
+const POST_INVITE_HERO_IMG = `${import.meta.env.BASE_URL}activity/post-invite-hero.png`;
+
+/** 完成礼品定制的截止日期展示文案 */
+const GIFT_CUSTOM_DEADLINE_LABEL = "2025年11月17日";
+
 const NINE_SLOTS = [
   { id: "t1", label: "验孕留念" },
   { id: "u1", label: "产检①" },
@@ -168,10 +174,131 @@ function InviteHero({ onBack, onRules, onPrizes }) {
   );
 }
 
-function BigInviteButton({ children, onClick }) {
+/** 邀请成功后顶部礼遇 Banner */
+function PostInviteHero({ onBack, onRules, onPrizes }) {
+  const pillDark = (label, onClick) => (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        border: "none",
+        borderRadius: 80,
+        padding: "6px 12px",
+        fontSize: 12,
+        fontWeight: 500,
+        background: "rgba(55,48,42,0.38)",
+        color: "rgba(255,255,255,0.95)",
+        cursor: "pointer",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+      }}
+    >
+      {label}
+    </button>
+  );
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        borderRadius: "0 0 16px 16px",
+        overflow: "hidden",
+        minHeight: 232,
+      }}
+    >
+      <img
+        src={POST_INVITE_HERO_IMG}
+        alt="免费领宝宝成长限定礼"
+        decoding="async"
+        loading="eager"
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center top",
+        }}
+      />
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(180deg, rgba(88,72,58,0.25) 0%, rgba(88,72,58,0.08) 45%, rgba(245,240,232,0.92) 100%)",
+        }}
+      />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 1, padding: "12px 16px 0" }}>
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="返回"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            border: "none",
+            background: "rgba(255,255,255,0.45)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 22,
+            lineHeight: 1,
+            color: "#fff",
+            padding: 0,
+            fontFamily: "system-ui, sans-serif",
+          }}
+        >
+          ‹
+        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+          {pillDark("活动规则", onRules)}
+          {pillDark("我的奖品", onPrizes)}
+        </div>
+      </div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "28px 20px 26px", marginTop: 6 }}>
+        <div
+          style={{
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#fff",
+            lineHeight: 1.35,
+            letterSpacing: 1,
+            textShadow:
+              "0 1px 0 rgba(255,120,160,0.95), 0 -1px 0 rgba(255,120,160,0.55), 0 4px 16px rgba(120,40,70,0.35)",
+          }}
+        >
+          免费领宝宝成长限定礼
+        </div>
+        <div
+          style={{
+            marginTop: 14,
+            display: "inline-block",
+            fontSize: 12,
+            fontWeight: 500,
+            padding: "5px 14px",
+            borderRadius: 80,
+            background: "rgba(255,77,136,0.92)",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.35)",
+          }}
+        >
+          打造专属回忆
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BigInviteButton({ children, onClick, disabled }) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={onClick}
       style={{
         width: "100%",
@@ -181,9 +308,10 @@ function BigInviteButton({ children, onClick }) {
         fontSize: 17,
         fontWeight: 500,
         color: "#fff",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.5 : 1,
         background: `linear-gradient(90deg, ${T.coral}, ${T.brand})`,
-        boxShadow: "0 8px 22px rgba(255,77,136,0.32)",
+        boxShadow: disabled ? "none" : "0 8px 22px rgba(255,77,136,0.32)",
       }}
     >
       {children}
@@ -278,8 +406,8 @@ function cardShell(children, extraStyle = {}) {
   );
 }
 
-/** 邀请活动主体：四宫格奖品 + 单人名额 + 记录（对齐参考布局） */
-function InviteMainFlow({ inviteRef, inviteSucceeded, records }) {
+/** 邀请前：四宫格说明 + 邀请进度 + 记录 */
+function InviteMainFlow({ inviteRef, records }) {
   return (
     <>
       {cardShell(
@@ -380,24 +508,193 @@ function InviteMainFlow({ inviteRef, inviteSucceeded, records }) {
                     height: 64,
                     margin: "0 auto",
                     borderRadius: "50%",
-                    border: inviteSucceeded ? `2px solid ${T.green}` : `2px dashed ${T.brandMid}`,
-                    background: inviteSucceeded ? "linear-gradient(145deg, #e9fcf7, #f5fffb)" : T.brandLight,
+                    border: `2px dashed ${T.brandMid}`,
+                    background: T.brandLight,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: inviteSucceeded ? 30 : 28,
+                    fontSize: 28,
                     fontWeight: 500,
-                    color: inviteSucceeded ? undefined : T.brand,
+                    color: T.brand,
                   }}
                 >
-                  {inviteSucceeded ? "👨" : "+"}
+                  +
                 </div>
                 <div style={{ fontSize: 13, color: T.text, marginTop: 10, fontWeight: 500 }}>准爸爸</div>
-                {inviteSucceeded ? (
-                  <div style={{ fontSize: 13, color: T.green, marginTop: 12, lineHeight: 1.47 }}>
-                    ✓ 已成功邀请 · 前往「我的奖品」点击立即定制填写相册
+              </div>
+            </div>
+          </>,
+        )}
+      </div>
+
+      {cardShell(
+        <>
+          <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6, color: T.dark }}>邀请记录</div>
+          <div style={{ fontSize: 12, color: T.textSec, marginBottom: 10 }}>{ACTIVITY_RANGE}</div>
+          {records.length ? (
+            <InviteRecordsList records={records} />
+          ) : (
+            <div style={{ fontSize: 13, color: T.textSec, padding: "14px 0", textAlign: "center", lineHeight: 1.47 }}>
+              暂无邀请记录
+            </div>
+          )}
+        </>,
+      )}
+    </>
+  );
+}
+
+/** 邀请成功后：礼品定制卡片（四选一 → 仅展示已选） + 进度 + 记录 */
+function InviteSuccessFlow({ inviteRef, records, selectedGiftId, onSelectGift }) {
+  const selected = PRIZE_OPTIONS.find((p) => p.id === selectedGiftId);
+
+  const renderPrizeVisual = (p, size = "grid") => {
+    const isLarge = size === "large";
+    return (
+      <div
+        style={{
+          aspectRatio: isLarge ? undefined : "1",
+          minHeight: isLarge ? 200 : undefined,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: p.photo ? (isLarge ? 10 : 6) : 10,
+          background: "linear-gradient(180deg, #fff8fb 0%, #ffe8f0 100%)",
+          overflow: "hidden",
+          borderRadius: isLarge ? 12 : 6,
+        }}
+      >
+        {p.photo ? (
+          <img
+            src={p.photo}
+            alt={p.label}
+            style={{
+              width: "100%",
+              height: isLarge ? 200 : "100%",
+              objectFit: "cover",
+              display: "block",
+              borderRadius: 8,
+            }}
+            loading="lazy"
+          />
+        ) : (
+          <span style={{ fontSize: isLarge ? 56 : 40 }} aria-hidden>
+            {p.emoji}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {cardShell(
+        <>
+          <div style={{ textAlign: "center", fontSize: 17, fontWeight: 500, color: T.dark, lineHeight: 1.35 }}>
+            🎁 邀请成功&nbsp;&nbsp;定制你的礼品&nbsp;✨
+          </div>
+          <div style={{ fontSize: 13, color: T.textSec, marginTop: 12, textAlign: "center", lineHeight: 1.55 }}>
+            请在<strong style={{ color: T.dark, fontWeight: 500 }}>{GIFT_CUSTOM_DEADLINE_LABEL}</strong>
+            前完成礼品定制，逾期礼品将自动作废
+          </div>
+
+          <div style={{ marginTop: 16 }}>
+            {!selected ? (
+              <>
+                <div style={{ fontSize: 13, color: T.textSec, marginBottom: 10, textAlign: "center" }}>
+                  以下好礼请选择其一（进入定制页后返回可重新选择）
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {PRIZE_OPTIONS.map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => onSelectGift(p.id)}
+                      style={{
+                        border: `1px solid rgba(255,77,136,0.22)`,
+                        borderRadius: 10,
+                        overflow: "hidden",
+                        padding: 0,
+                        margin: 0,
+                        cursor: "pointer",
+                        background: "#fff",
+                        textAlign: "left",
+                      }}
+                    >
+                      <div style={{ borderRadius: "10px 10px 0 0", overflow: "hidden" }}>{renderPrizeVisual(p, "grid")}</div>
+                      <div style={{ padding: "8px 8px 10px", textAlign: "center", background: "#fff5f8" }}>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: T.brand }}>{p.label}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "4px 0 8px" }}>
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: 240,
+                    borderRadius: 14,
+                    overflow: "hidden",
+                    border: `1px solid rgba(255,77,136,0.18)`,
+                    boxShadow: "0 8px 24px rgba(255,77,136,0.12)",
+                  }}
+                >
+                  <div style={{ paddingBottom: 10, background: "#ffeef4" }}>{renderPrizeVisual(selected, "large")}</div>
+                  <div style={{ padding: "10px 12px 14px", textAlign: "center", background: "#fff5f8" }}>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: T.dark }}>— {selected.label} —</span>
                   </div>
-                ) : null}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onSelectGift(null)}
+                  style={{
+                    marginTop: 12,
+                    padding: 0,
+                    border: "none",
+                    background: "none",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    lineHeight: 1.29,
+                    fontWeight: 400,
+                    color: "#4f7cae",
+                    fontFamily: "'PingFang SC', -apple-system, sans-serif",
+                  }}
+                >
+                  更换礼品
+                </button>
+              </div>
+            )}
+          </div>
+        </>,
+        { marginTop: 12, background: "#faf8f6", border: `0.5px solid rgba(0,0,0,0.06)` },
+      )}
+
+      <div ref={inviteRef}>
+        {cardShell(
+          <>
+            <div style={{ fontSize: 15, fontWeight: 500, color: T.dark, marginBottom: 12 }}>邀请进度</div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    margin: "0 auto",
+                    borderRadius: "50%",
+                    border: `2px solid ${T.green}`,
+                    background: "linear-gradient(145deg, #e9fcf7, #f5fffb)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 30,
+                  }}
+                >
+                  👨
+                </div>
+                <div style={{ fontSize: 13, color: T.text, marginTop: 10, fontWeight: 500 }}>准爸爸</div>
+                <div style={{ fontSize: 13, color: T.green, marginTop: 10, lineHeight: 1.47 }}>已成功邀请</div>
               </div>
             </div>
           </>,
@@ -460,7 +757,7 @@ function CongratsModal({ show, onConfirm }) {
           恭喜获得奖品
         </div>
         <div style={{ fontSize: 14, color: T.textSec, marginTop: 12, lineHeight: 1.47 }}>
-          你已解锁好礼领取资格，可在「我的奖品」进入「定制奖品」完善相册与爸爸妈妈留言～
+          你已解锁好礼领取资格，请在活动页四选一礼品后点击「免费定制」，也可在「我的奖品」进入定制流程～
         </div>
         <button
           type="button"
@@ -987,6 +1284,7 @@ export default function App() {
   const [page, setPage] = useState("activity");
   const [records, setRecords] = useState(MOCK_RECORDS);
   const [wonPrizes, setWonPrizes] = useState([]);
+  const [selectedGiftId, setSelectedGiftId] = useState(null);
 
   const handleInviteClick = () => {
     setShowCongrats(true);
@@ -1009,6 +1307,7 @@ export default function App() {
         source: "合体时光邀请活动",
       },
     ]);
+    setSelectedGiftId(null);
   };
 
   const handleRemindDad = () => {
@@ -1082,15 +1381,35 @@ export default function App() {
                 background: "linear-gradient(180deg, #fff8fb 0%, #f7f7f7 24%)",
               }}
             >
-              <InviteHero
-                onBack={() => {
-                  if (window.history.length > 1) window.history.back();
-                }}
-                onRules={() => setShowRules(true)}
-                onPrizes={() => setShowPrizes(true)}
-              />
+              {!inviteSucceeded ? (
+                <>
+                  <InviteHero
+                    onBack={() => {
+                      if (window.history.length > 1) window.history.back();
+                    }}
+                    onRules={() => setShowRules(true)}
+                    onPrizes={() => setShowPrizes(true)}
+                  />
 
-              <InviteMainFlow inviteRef={inviteAnchorRef} inviteSucceeded={inviteSucceeded} records={records} />
+                  <InviteMainFlow inviteRef={inviteAnchorRef} records={records} />
+                </>
+              ) : (
+                <>
+                  <PostInviteHero
+                    onBack={() => {
+                      if (window.history.length > 1) window.history.back();
+                    }}
+                    onRules={() => setShowRules(true)}
+                    onPrizes={() => setShowPrizes(true)}
+                  />
+                  <InviteSuccessFlow
+                    inviteRef={inviteAnchorRef}
+                    records={records}
+                    selectedGiftId={selectedGiftId}
+                    onSelectGift={setSelectedGiftId}
+                  />
+                </>
+              )}
 
             </div>
 
@@ -1105,13 +1424,29 @@ export default function App() {
               >
                 <BigInviteButton onClick={handleInviteClick}>立即邀请准爸爸</BigInviteButton>
               </div>
-            ) : null}
+            ) : (
+              <div
+                style={{
+                  flexShrink: 0,
+                  padding: "10px 14px calc(12px + env(safe-area-inset-bottom))",
+                  background: "linear-gradient(180deg, rgba(247,247,247,0) 0%, rgba(247,247,247,0.97) 28%)",
+                  borderTop: "0.5px solid rgba(0,0,0,0.05)",
+                }}
+              >
+                <BigInviteButton disabled={!selectedGiftId} onClick={() => selectedGiftId && setPage("customize")}>
+                  免费定制
+                </BigInviteButton>
+              </div>
+            )}
           </div>
         </div>
       </div>
       ) : (
         <CustomizePrizePage
-          onBack={() => setPage("activity")}
+          onBack={() => {
+            setSelectedGiftId(null);
+            setPage("activity");
+          }}
           filledIds={filledIds}
           toggleFill={toggleFill}
           momWish={momWish}
@@ -1131,7 +1466,7 @@ export default function App() {
 
       <SheetModal show={showRules} onClose={() => setShowRules(false)} title="活动规则">
         {[
-          ["玩法", "邀请 1 位准爸爸完成助力；在「我的奖品」进入「定制奖品」页，你与爸爸可分别留言并填满九宫格孕期瞬间。"],
+          ["玩法", "邀请 1 位准爸爸完成助力；成功后先在活动页四选一礼品，再点「免费定制」进入定制页；你与爸爸可分别留言并填满九宫格孕期瞬间。"],
           ["奖品", "达标后可从以下好礼中 4 选 1：孕期纪念照片书、定制相册摆台、易点生活卡、美柚 7 天会员（细则以领奖页为准）。"],
           ["说明", "每位用户限一号参与；实物奖品涉及收货地址填写。"],
         ].map(([t, c]) => (
@@ -1148,6 +1483,7 @@ export default function App() {
         prizes={wonPrizes}
         onCustomize={() => {
           setShowPrizes(false);
+          setSelectedGiftId((prev) => prev ?? "album");
           setPage("customize");
         }}
       />
