@@ -44,10 +44,8 @@ const PRIZE_OPTIONS = [
   { id: "vip", label: "美柚7天会员", emoji: "✨" },
 ];
 
-const HERO_INVITE_IMG = `${import.meta.env.BASE_URL}activity/hero-baby-star.png`;
-
-/** 邀请成功后 Banner（礼遇插画） */
-const POST_INVITE_HERO_IMG = `${import.meta.env.BASE_URL}activity/post-invite-hero.png`;
+/** 活动页顶栏 Banner（邀请前后保持一致） */
+const ACTIVITY_HERO_IMG = `${import.meta.env.BASE_URL}activity/post-invite-hero.png`;
 
 /** 完成礼品定制的截止日期展示文案 */
 const GIFT_CUSTOM_DEADLINE_LABEL = "2025年11月17日";
@@ -67,115 +65,8 @@ const NINE_SLOTS = [
 /** 留言字数上限（不在界面展示计数） */
 const WISH_LIMIT = 120;
 
-/** 头图区：星空宝宝插画 + 标题 + 右上角半透明入口 */
-function InviteHero({ onBack, onRules, onPrizes }) {
-  const pillOnHero = (label, onClick) => (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        border: "none",
-        borderRadius: 80,
-        padding: "6px 12px",
-        fontSize: 12,
-        fontWeight: 500,
-        background: "rgba(255,255,255,0.42)",
-        color: "rgba(0,0,0,0.72)",
-        cursor: "pointer",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-      }}
-    >
-      {label}
-    </button>
-  );
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        borderRadius: "0 0 16px 16px",
-        overflow: "hidden",
-        minHeight: 224,
-      }}
-    >
-      <img
-        src={HERO_INVITE_IMG}
-        alt="合体时光，好礼相伴"
-        decoding="async"
-        loading="eager"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "center 34%",
-        }}
-      />
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(180deg, rgba(35,24,48,0.42) 0%, rgba(35,24,48,0.12) 40%, rgba(22,14,28,0.62) 100%)",
-        }}
-      />
-
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 1, padding: "12px 16px 0" }}>
-        <button
-          type="button"
-          onClick={onBack}
-          aria-label="返回"
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            border: "none",
-            background: "rgba(255,255,255,0.38)",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 22,
-            lineHeight: 1,
-            color: "#fff",
-            padding: 0,
-            fontFamily: "system-ui, sans-serif",
-          }}
-        >
-          ‹
-        </button>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-          {pillOnHero("活动规则", onRules)}
-          {pillOnHero("我的奖品", onPrizes)}
-        </div>
-      </div>
-
-      <div style={{ textAlign: "center", position: "relative", zIndex: 1, padding: "18px 20px 22px", marginTop: 8 }}>
-        <div
-          style={{
-            fontSize: 21,
-            fontWeight: 500,
-            color: "#fff",
-            lineHeight: 1.35,
-            letterSpacing: 1,
-            textShadow: "0 2px 14px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.35)",
-          }}
-        >
-          合体时光，好礼相伴
-        </div>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.9)", marginTop: 10, lineHeight: 1.47, textShadow: "0 1px 8px rgba(0,0,0,0.35)" }}>
-          邀请准爸爸完成助力 · 好礼四选一
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** 邀请成功后顶部礼遇 Banner */
-function PostInviteHero({ onBack, onRules, onPrizes }) {
+/** 活动页通用顶栏：礼遇插画 + 标题 + 右上角入口（邀请成功后不换图） */
+function ActivityHero({ onBack, onRules, onPrizes }) {
   const pillDark = (label, onClick) => (
     <button
       type="button"
@@ -207,7 +98,7 @@ function PostInviteHero({ onBack, onRules, onPrizes }) {
       }}
     >
       <img
-        src={POST_INVITE_HERO_IMG}
+        src={ACTIVITY_HERO_IMG}
         alt="免费领宝宝成长限定礼"
         decoding="async"
         loading="eager"
@@ -1381,35 +1272,26 @@ export default function App() {
                 background: "linear-gradient(180deg, #fff8fb 0%, #f7f7f7 24%)",
               }}
             >
-              {!inviteSucceeded ? (
-                <>
-                  <InviteHero
-                    onBack={() => {
-                      if (window.history.length > 1) window.history.back();
-                    }}
-                    onRules={() => setShowRules(true)}
-                    onPrizes={() => setShowPrizes(true)}
-                  />
+              <>
+                <ActivityHero
+                  onBack={() => {
+                    if (window.history.length > 1) window.history.back();
+                  }}
+                  onRules={() => setShowRules(true)}
+                  onPrizes={() => setShowPrizes(true)}
+                />
 
+                {!inviteSucceeded ? (
                   <InviteMainFlow inviteRef={inviteAnchorRef} records={records} />
-                </>
-              ) : (
-                <>
-                  <PostInviteHero
-                    onBack={() => {
-                      if (window.history.length > 1) window.history.back();
-                    }}
-                    onRules={() => setShowRules(true)}
-                    onPrizes={() => setShowPrizes(true)}
-                  />
+                ) : (
                   <InviteSuccessFlow
                     inviteRef={inviteAnchorRef}
                     records={records}
                     selectedGiftId={selectedGiftId}
                     onSelectGift={setSelectedGiftId}
                   />
-                </>
-              )}
+                )}
+              </>
 
             </div>
 
